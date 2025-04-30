@@ -4,6 +4,7 @@ import pickle
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_percentage_error as mape
 from catboost import Pool
+import streamlit as st
 
 class MyMAPE: # MAPE for catboost log preds
     @staticmethod
@@ -21,6 +22,30 @@ class MyMAPE: # MAPE for catboost log preds
         score = self.mape(np.exp(y_t), np.exp(y_p[0]))
         return score, 0
 
+types_en_ru = {
+    "apartment": "квартира",
+    "house": "дом",
+    "duplex": "дуплекс",
+    "villa": "вилла",
+    "mansion": "особняк",
+    "land": "земля",
+    "miscellaneous": "разное",
+    "land for development": "земля под застройку",
+    "loft": "лофт",
+    "farm": "ферма",
+    "plot of land": "участок с землей",
+    "life annuity": "пожизненная рента",
+    "parking": "паркинг",
+    "chalet": "шале",
+    "flophouse": "ночлежка",
+    "room": "комната",
+    "house on the water": "дом на воде",
+    "estate": "усадьба",
+    "mill": "мельница",
+    "workshop": "мастерская",
+    "manor hotel": "отель-усадьба",
+}
+types_ru_en = {v: k for k, v in types_en_ru.items()}
 
 def read_train(path="./data", drop_target=True):
     train = pd.read_csv(path + '/train.csv', index_col='id')
@@ -33,8 +58,9 @@ def get_geo(train, city):
     group = train.groupby(by='Город')
     lat, long = group[['Широта', 'Долгота']].mean().loc[city].values
     ind = group['Индекс'].apply(lambda x: x.mode()).loc[city].values[0]
-    return lat, long, ind
+    return lat, long, int(ind)
 
+@st.cache_data
 def get_pure(train):
     df = pd.DataFrame(columns=train.columns, index=[0])
     num_col = train.select_dtypes(include='number').columns
@@ -47,8 +73,10 @@ def get_pure(train):
 
     return df
 
+@st.cache_data
 def fill_na(train, df=None):
     df = get_pure(train) if df is None else df
+    df.loc[0, ['Широта', 'Долгота', 'Индекс']] = get_geo(train, df['Город'].iloc[0])
 
     means = train.groupby(by='Тип_жилья')['Размер_участка'].mean().isna()
     zero_types = means.index[means.values]
@@ -116,6 +144,7 @@ def pca(df, train, col, top, model="pca_1"):
     df[top] = df_pca[:, [int(pca_t.split("_")[-1]) for pca_t in top]]
     return df
 
+@st.cache_data
 def add_features(df, train):
     def log_nan(row):
         row[row < 1] = 1
@@ -161,6 +190,7 @@ def get_pred(models, x, strat='', weights=None):
     if strat == '': preds /= len(models)
     return preds
 
+@st.cache_data
 def predict(df):
     models = np.load("./weights/bagging_models.npy", allow_pickle=True)
     weights = np.load("./weights/vote_weights.npy")
