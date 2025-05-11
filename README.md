@@ -8,10 +8,10 @@ With this utility you can get the recommended price for selling real estate in F
 * `app.py`: streamlit app file
 * `inference.py`: script to run data preparation and catboost
 
-## Run app loacally
+## Run app loacally (Windows)
 ```cmd
 python -m venv venv
-venv/bin/activate
+venv/Scripts/activate
 pip install -r requirements.txt
 streamlit run app.py
 ```
@@ -19,7 +19,7 @@ Open http://localhost:8501 to view the app.
 
 ---
 
-## App window view
+## Application window view
 Inside the interface there are search fields, numerical data entry fields, a sidebar with switches for binary features and a prediction output at the very bottom of the window
 
 ![Full window](img/full.jpg)
