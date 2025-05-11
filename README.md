@@ -4,28 +4,42 @@ This repository presents the Implementation of a web interface based on the Stra
 
 With this utility you can get the recommended price for selling real estate in France
 
+## Files
+* `app.py`: streamlit app file
+* `inference.py`: script to run data preparation and catboost
 
-## Full window
+## Run app loacally
+```cmd
+python -m venv venv
+venv/bin/activate
+pip install -r requirements.txt
+streamlit run app.py
+```
+Open http://localhost:8501 to view the app.
+
+---
+
+## App window view
 Inside the interface there are search fields, numerical data entry fields, a sidebar with switches for binary features and a prediction output at the very bottom of the window
 
 ![Full window](img/full.jpg)
 
-## Search
+### Search
 The program has search fields with hints for the type of housing and city.
 
 ![Search](img/search.jpg)
 
-### Geo
+#### Geo
 After selecting a city, the geographic information about the property is updated.
 
 ![Geo](img/geo.jpg)
 
-## Sidebar
+### Sidebar
 The sidebar contains switches for selecting additional real estate features.
 
 ![Side](img/sidebar.jpg)
 
-## Result
+### Result
 The result of the program is a prediction of the cost of real estate.
 
 ![Res](img/pred.jpg)
