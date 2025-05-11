@@ -1,6 +1,6 @@
 # House Issue (web version)
 
-This repository presents the Implementation of a web interface based on the Stramlit library for solving the "Housing Issue" problem of the artificial intelligence track of the RuCode 2024 festival.
+This repository presents the Implementation of a web interface based on the Streamlit library for solving the "Housing Issue" problem of the artificial intelligence track of the RuCode 2024 festival.
 
 With this utility you can get the recommended price for selling real estate in France
 
